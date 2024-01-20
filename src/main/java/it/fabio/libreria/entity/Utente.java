@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Proxy;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,6 +13,7 @@ import java.util.Set;
 @Setter
 @Getter
 @RequiredArgsConstructor
+@Proxy(lazy = false)
 public class Utente {
 
     @Id
@@ -27,11 +29,11 @@ public class Utente {
     @Column(nullable = false, length = 20)
     private String email;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name="libri_utente",
             joinColumns = {@JoinColumn(name="utente_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name="libro_id", referencedColumnName = "id")}
     )
-    private Set<Libro> authorities = new HashSet<>();
+    private Set<Libro> libri = new HashSet<>();
 
 }
