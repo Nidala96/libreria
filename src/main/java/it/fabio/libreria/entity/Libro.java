@@ -47,4 +47,17 @@ public class Libro {
         this.trama = trama;
         this.numeroLettureComplete = numeroLettureComplete;
     }
+
+    @Override
+    public String toString() {
+        return "Libro{" +
+                "titolo='" + titolo + '\'' +
+                ", autore='" + autore + '\'' +
+                ", codiceISBN='" + codiceISBN + '\'' +
+                ", dataAggiunta=" + dataAggiunta +
+                ", dataEliminazione=" + dataEliminazione +
+                ", trama='" + trama + '\'' +
+                ", numeroLettureComplete=" + numeroLettureComplete +
+                '}';
+    }
 }

@@ -26,14 +26,17 @@ public class Utente {
     @Column(nullable = false, length = 15)
     private String cognome;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 30)
     private String email;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name="libri_utente",
-            joinColumns = {@JoinColumn(name="utente_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name="libro_id", referencedColumnName = "id")}
-    )
+//    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//    @JoinTable(name="libri_utente",
+//            joinColumns = {@JoinColumn(name="utente_id", referencedColumnName = "id")},
+//            inverseJoinColumns= {@JoinColumn(name="libro_id", referencedColumnName = "id")}
+//
+//    )
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "utente_id")
     private Set<Libro> libri = new HashSet<>();
 
 }
