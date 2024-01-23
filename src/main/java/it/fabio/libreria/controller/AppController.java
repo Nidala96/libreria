@@ -8,10 +8,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.validation.annotation.Validated;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("libro")
+@Validated
 public class AppController {
 
     private final LibroService libroService;
@@ -35,7 +36,7 @@ public class AppController {
     }
 
     @PutMapping("/mod-book")
-    public ResponseEntity<?> modificaLibro(@RequestBody LibroRequest libroRequest, @RequestParam long utenteId, @RequestParam long libroId){
+    public ResponseEntity<?> modificaLibro(@RequestBody @Valid LibroRequest libroRequest, @RequestParam long utenteId, @RequestParam long libroId){
         return libroService.modificaLibro(libroRequest, utenteId, libroId);
     }
     @GetMapping
