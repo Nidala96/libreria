@@ -47,7 +47,7 @@ logging:
 
 spring-doc:
   swagger-ui:
-    enabled: true
+    enabled: false
     # hostname:port/swagger-ui.html => localhost:8081/swagger-ui.html
     path: /swagger-ui.html
 
