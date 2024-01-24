@@ -17,12 +17,14 @@ public class Image {
     @Getter
     private int id;
 
-    @Column(nullable = false)
+    @Column(length = 65535, columnDefinition = "text")
     private String image;
 
     public Image(String image) {
         this.image = image;
     }
+
+
 
     public String getImage() {
         return image;

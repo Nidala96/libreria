@@ -1,6 +1,5 @@
 package it.fabio.libreria.controller;
 
-import it.fabio.libreria.entity.Image;
 import it.fabio.libreria.payload.request.LibroRequest;
 import it.fabio.libreria.service.CsvService;
 import it.fabio.libreria.service.ImageService;

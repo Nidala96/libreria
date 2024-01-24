@@ -7,7 +7,6 @@ import it.fabio.libreria.repository.ImageRepository;
 import it.fabio.libreria.repository.LibroRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -16,18 +15,14 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.UUID;
+import java.util.Base64;
+
 
 @Service
 @RequiredArgsConstructor
 public class ImageService {
 
-    @Value("${application.contentImage.path}")
-    private String imagePath;
 
     private final ImageRepository imageRepository;
 
@@ -49,18 +44,21 @@ public class ImageService {
     @Transactional
     public ResponseEntity<?> addImageToContent(long size, int width, int height, String[] extensions, MultipartFile file, long libroId) throws IOException {
         Libro libro = libroRepository.findById(libroId).orElseThrow(() -> new ResourceNotFoundException("Libro", "id", libroId));
-        if(checkImage(size, width, height, extensions, file).getStatusCode().equals(HttpStatus.OK)){
-            String filename = file.getOriginalFilename();
-            String ext = filename.substring(filename.lastIndexOf("."));
-            String newFilename = UUID.randomUUID().toString()+ext;
-            Path path = Paths.get(imagePath+newFilename);
-            Files.write(path, file.getBytes());
-            Image i = new Image(newFilename);
+        if (checkImage(size, width, height, extensions, file).getStatusCode().equals(HttpStatus.OK)) {
+            // Converti il file direttamente in Base64
+            String imageData = convertFileToBase64(file);
+            Image i = new Image();
+            i.setImage(imageData);
             imageRepository.save(i);
             libro.setImage(i);
             return new ResponseEntity("Image added to content", HttpStatus.CREATED);
         }
         return new ResponseEntity("Something went wrong adding image to content", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    private String convertFileToBase64(MultipartFile file) throws IOException {
+        byte[] fileContent = file.getBytes();
+        return Base64.getEncoder().encodeToString(fileContent);
     }
 
     private boolean checkSize(MultipartFile file, long size){
