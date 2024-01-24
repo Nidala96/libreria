@@ -20,9 +20,10 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class LibroService {
 
-
     private final UtenteRepository utenteRepository;
     private final LibroRepository libroRepository;
+
+    private final ImageService imageService;
 
     public ResponseEntity<?> getLibroById(long idLibro) {
         try {
@@ -33,15 +34,13 @@ public class LibroService {
         }
     }
 
-
-
     @Transactional
     public ResponseEntity<?> aggiungiLibro(LibroRequest libroRequest, long utenteId) {
         Utente utente = utenteRepository.findById(utenteId).orElseThrow(() -> new ResourceNotFoundException("Utente", "id", utenteId));
         Set<Libro> libri = utente.getLibri();
-        Libro libro = new Libro(libroRequest.getTitolo(),libroRequest.getAutore(), libroRequest.getCodiceISBN(), libroRequest.getDataAggiunta(),libroRequest.getTrama(),libroRequest.getNumeroLettureComplete());
+        Libro libro = new Libro(libroRequest.getTitolo(),libroRequest.getAutore(), libroRequest.getCodiceISBN(),libroRequest.getTrama(),libroRequest.getNumeroLettureComplete());
         libri.add(libro);
-        return new ResponseEntity<>("Aggiunto libro", HttpStatus.OK);
+        return new ResponseEntity<>(libro, HttpStatus.OK);
 
     }
     @Transactional

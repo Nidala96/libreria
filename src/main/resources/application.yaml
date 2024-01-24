@@ -41,7 +41,7 @@ spring:
 
 logging:
   level:
-    '[it.cgmconsulting.myblog]': info
+    '[it.fabio.libreria]': info
     '[org.hibernate.orm.jdbc.bind]': trace
     '[org.springframework.boot]': info
 
@@ -51,6 +51,14 @@ spring-doc:
     # hostname:port/swagger-ui.html => localhost:8081/swagger-ui.html
     path: /swagger-ui.html
 
+# CUSTOM PROPERTIES
+application:
+  contentImage:
+    size: 20480
+    width: 1000
+    height: 1000
+    extensions: jpg,jpeg
+    path: C:\Users\Nidala\Vs-Code\libreria\src\Components\Assets\
 
 
 

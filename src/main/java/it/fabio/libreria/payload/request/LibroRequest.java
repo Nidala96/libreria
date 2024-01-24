@@ -23,7 +23,7 @@ public class LibroRequest {
 
     @NotNull
     @NotBlank
-    @Size(min = 13, max = 13)
+    @Size(min = 3, max = 13)
     private String codiceISBN;
 
     private Date dataAggiunta;
@@ -33,6 +33,5 @@ public class LibroRequest {
     @Size(min = 10, max = 500)
     private String trama;
 
-    @Min(1)
     private int numeroLettureComplete;
 }

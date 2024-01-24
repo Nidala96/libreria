@@ -5,7 +5,9 @@ import lombok.Getter;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Proxy;
+import org.hibernate.type.SqlTypes;
 
 import java.util.Date;
 
@@ -39,11 +41,14 @@ public class Libro {
 
     private int numeroLettureComplete;
 
-    public Libro(String titolo, String autore, String codiceISBN, Date dataAggiunta, String trama, int numeroLettureComplete) {
+    @JdbcTypeCode(SqlTypes.JSON)
+    private Image image;
+
+    public Libro(String titolo, String autore, String codiceISBN, String trama, int numeroLettureComplete) {
         this.titolo = titolo;
         this.autore = autore;
         this.codiceISBN = codiceISBN;
-        this.dataAggiunta = dataAggiunta;
+        this.dataAggiunta = new Date();;
         this.trama = trama;
         this.numeroLettureComplete = numeroLettureComplete;
     }
@@ -60,4 +65,6 @@ public class Libro {
                 ", numeroLettureComplete=" + numeroLettureComplete +
                 '}';
     }
+
+
 }
