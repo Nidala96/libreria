@@ -54,9 +54,9 @@ spring-doc:
 # CUSTOM PROPERTIES
 application:
   contentImage:
-    size: 20480
-    width: 1000
-    height: 1000
+    size: 204800
+    width: 10000
+    height: 10000
     extensions: jpg,jpeg
 
 
