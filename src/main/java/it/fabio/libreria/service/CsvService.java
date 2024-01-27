@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.io.FileWriter;
@@ -25,8 +26,12 @@ public class CsvService {
 
     private final UtenteRepository utenteRepository;
 
-    public ResponseEntity<?> getListaLibriPerUtenteToStringArray(long utenteId) throws Exception {
-        Utente utente = utenteRepository.findById(utenteId).orElseThrow(() -> new ResourceNotFoundException("Utente", "id", utenteId));
+    public ResponseEntity<?> getListaLibriPerUtenteToStringArray(UserDetails userDetails) throws Exception {
+        Utente utenteData = (Utente) userDetails;
+        Utente utente = utenteRepository.findById(utenteData.getId()).orElseThrow();
+        if(utente == null) {
+            return new ResponseEntity<>("Utente non esiste", HttpStatus.NOT_FOUND);
+        }
         Set<Libro> libri = utente.getLibri();
         if(libri.isEmpty()){
             return new ResponseEntity<>("Nessun libro e' stato trovato", HttpStatus.NOT_FOUND);

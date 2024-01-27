@@ -2,14 +2,17 @@ package it.fabio.libreria.service;
 
 import it.fabio.libreria.entity.Libro;
 import it.fabio.libreria.entity.Utente;
+import it.fabio.libreria.exception.OwnerException;
 import it.fabio.libreria.exception.ResourceNotFoundException;
 import it.fabio.libreria.payload.request.LibroRequest;
 import it.fabio.libreria.repository.LibroRepository;
 import it.fabio.libreria.repository.UtenteRepository;
+import jakarta.transaction.NotSupportedException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -25,9 +28,10 @@ public class LibroService {
 
     private final ImageService imageService;
 
-    public ResponseEntity<?> getLibroById(long idLibro) {
+    public ResponseEntity<?> getLibroById(UserDetails userDetails, long libroId) {
         try {
-            Libro libro = libroRepository.getReferenceById(idLibro);
+            Libro libro = libroRepository.getReferenceById(libroId);
+            isOwner(userDetails, libro.getUtente());
             return new ResponseEntity<>(libro, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Libro non trovato", HttpStatus.NOT_FOUND);
@@ -35,17 +39,26 @@ public class LibroService {
     }
 
     @Transactional
-    public ResponseEntity<?> aggiungiLibro(LibroRequest libroRequest, long utenteId) {
-        Utente utente = utenteRepository.findById(utenteId).orElseThrow(() -> new ResourceNotFoundException("Utente", "id", utenteId));
+    public ResponseEntity<?> aggiungiLibro(LibroRequest libroRequest, UserDetails userDetails) {
+        Utente utenteData = (Utente) userDetails;
+        Utente utente = utenteRepository.findById(utenteData.getId()).orElseThrow();
+        if(utente == null) {
+            return new ResponseEntity<>("Utente non esiste", HttpStatus.NOT_FOUND);
+        }
         Set<Libro> libri = utente.getLibri();
         Libro libro = new Libro(libroRequest.getTitolo(),libroRequest.getAutore(), libroRequest.getCodiceISBN(),libroRequest.getTrama(),libroRequest.getNumeroLettureComplete());
         libri.add(libro);
-        return new ResponseEntity<>(libro, HttpStatus.OK);
+        libro.setUtente(utente);
+        return new ResponseEntity<>(libro, HttpStatus.CREATED);
 
     }
     @Transactional
-    public ResponseEntity<?> modificaLibro(LibroRequest libroRequest, long utenteId, long libroId) {
-        Utente utente = utenteRepository.findById(utenteId).orElseThrow(() -> new ResourceNotFoundException("Utente", "id", utenteId));
+    public ResponseEntity<?> modificaLibro(LibroRequest libroRequest, UserDetails userDetails, long libroId) {
+        Utente utenteData = (Utente) userDetails;
+        Utente utente = utenteRepository.findById(utenteData.getId()).orElseThrow();
+        if(utente == null) {
+            return new ResponseEntity<>("Utente non esiste", HttpStatus.NOT_FOUND);
+        }
         Set<Libro> libri = utente.getLibri();
         Optional<Libro> libroDaModificare = libri.stream()
                 .filter(libro -> libro.getId() == libroId)
@@ -63,8 +76,12 @@ public class LibroService {
 
     }
     @Transactional
-    public ResponseEntity<?> modificaNumeroLetture(long utenteId, long libroId, int numeroLetture) {
-        Utente utente = utenteRepository.findById(utenteId).orElseThrow(() -> new ResourceNotFoundException("Utente", "id", utenteId));
+    public ResponseEntity<?> modificaNumeroLetture(UserDetails userDetails, long libroId, int numeroLetture) {
+        Utente utenteData = (Utente) userDetails;
+        Utente utente = utenteRepository.findById(utenteData.getId()).orElseThrow();
+        if(utente == null) {
+            return new ResponseEntity<>("Utente non esiste", HttpStatus.NOT_FOUND);
+        }
         Set<Libro> libri = utente.getLibri();
         Optional<Libro> libroDaModificare = libri.stream()
                 .filter(libro -> libro.getId() == libroId)
@@ -77,14 +94,24 @@ public class LibroService {
 
     }
     @Transactional
-    public ResponseEntity<?> eliminaLibro(long utenteId, long libroId) {
-            Utente utente = utenteRepository.findById(utenteId).orElseThrow(() -> new ResourceNotFoundException("Utente", "id", utenteId));
+    public ResponseEntity<?> eliminaLibro(UserDetails userDetails, long libroId) {
+            Utente utenteData = (Utente) userDetails;
+            Utente utente = utenteRepository.findById(utenteData.getId()).orElseThrow();
+            if(utente == null) {
+                return new ResponseEntity<>("Utente non esiste", HttpStatus.NOT_FOUND);
+            }
             Set<Libro> libri = utente.getLibri();
             Libro libro = libroRepository.findById(libroId).orElseThrow(() -> new ResourceNotFoundException("Libro", "id", libroId));
             libro.setDataEliminazione(new Date());
+            libro.setUtente(null);
             if (!libri.remove(libro)) {
                 throw new ResourceNotFoundException("libro", "id", libroId);
             }
             return new ResponseEntity<>("Libro eliminato", HttpStatus.OK);
         }
+
+    protected void isOwner(UserDetails userDetails, Utente utente) {
+        if (!utente.equals(userDetails))
+            throw new OwnerException();
+    }
 }
