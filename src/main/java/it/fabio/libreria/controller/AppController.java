@@ -48,8 +48,6 @@ public class AppController {
         return utenteService.getListaLibriPerUtente(utenteId);
     }
 
-
-
     @PutMapping("/mod-book")
     public ResponseEntity<?> modificaLibro(@RequestBody @Valid LibroRequest libroRequest, @RequestParam long utenteId, @RequestParam long libroId){
         return libroService.modificaLibro(libroRequest, utenteId, libroId);
