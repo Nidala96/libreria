@@ -50,7 +50,7 @@ public class Utente implements UserDetails {
 
     @Override
     public String getUsername() {
-        return cognome;
+        return nome;
     }
 
     @Override
