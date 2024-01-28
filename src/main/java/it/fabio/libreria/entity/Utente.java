@@ -1,12 +1,16 @@
 package it.fabio.libreria.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Proxy;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -14,7 +18,9 @@ import java.util.Set;
 @Getter
 @RequiredArgsConstructor
 @Proxy(lazy = false)
-public class Utente {
+@Builder
+@AllArgsConstructor
+public class Utente implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,14 +35,54 @@ public class Utente {
     @Column(nullable = false, length = 30)
     private String email;
 
-//    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-//    @JoinTable(name="libri_utente",
-//            joinColumns = {@JoinColumn(name="utente_id", referencedColumnName = "id")},
-//            inverseJoinColumns= {@JoinColumn(name="libro_id", referencedColumnName = "id")}
-//
-//    )
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "utente_id")
+    @JsonIgnore
+    @Column(nullable = false)
+    private String password;
+
+
+    @OneToMany(mappedBy = "utente",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Libro> libri = new HashSet<>();
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public String getUsername() {
+        return cognome;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Utente utente = (Utente) o;
+        return Objects.equals(id, utente.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
