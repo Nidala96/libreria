@@ -10,10 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,19 +39,20 @@ public class AppController {
     private final ImageService imageService;
 
     @GetMapping("/get-libro/{libroId}")
-    public ResponseEntity<?> getLibro(@AuthenticationPrincipal UserDetails userDetails, @PathVariable long libroId){
-        return libroService.getLibroById(userDetails,libroId);
+    public ResponseEntity<?> getLibro(@PathVariable long libroId){
+        return libroService.getLibroById(libroId);
     }
-
 
     @GetMapping("/get-libri")
-    public ResponseEntity<?> getListaLibriPerUtente(@AuthenticationPrincipal UserDetails userDetails){
-        return utenteService.getListaLibriPerUtente(userDetails);
+    public ResponseEntity<?> getListaLibriPerUtente(@RequestParam long utenteId){
+        return utenteService.getListaLibriPerUtente(utenteId);
     }
 
+
+
     @PutMapping("/mod-book")
-    public ResponseEntity<?> modificaLibro(@RequestBody @Valid LibroRequest libroRequest, @AuthenticationPrincipal UserDetails userDetails, @RequestParam long libroId){
-        return libroService.modificaLibro(libroRequest, userDetails, libroId);
+    public ResponseEntity<?> modificaLibro(@RequestBody @Valid LibroRequest libroRequest, @RequestParam long utenteId, @RequestParam long libroId){
+        return libroService.modificaLibro(libroRequest, utenteId, libroId);
     }
     @GetMapping
     public ResponseEntity<?> login(@RequestParam String nome, @RequestParam String cognome){
@@ -63,23 +60,23 @@ public class AppController {
     }
 
     @PutMapping("/mod-book-count")
-    public ResponseEntity<?> modificaNumeroLetture(@AuthenticationPrincipal UserDetails userDetails, @RequestParam long libroId, @RequestParam int numeroLetture){
-        return libroService.modificaNumeroLetture(userDetails, libroId, numeroLetture);
+    public ResponseEntity<?> modificaNumeroLetture(@RequestParam long utenteId, @RequestParam long libroId, @RequestParam int numeroLetture){
+        return libroService.modificaNumeroLetture(utenteId, libroId, numeroLetture);
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<?> eliminaLibro(@AuthenticationPrincipal UserDetails userDetails, @RequestParam long libroId){
-        return libroService.eliminaLibro(userDetails, libroId);
+    public ResponseEntity<?> eliminaLibro(@RequestParam long utenteId, @RequestParam long libroId){
+        return libroService.eliminaLibro(utenteId, libroId);
     }
 
     @GetMapping("/get-csv")
-    public ResponseEntity<?> getCsv(@AuthenticationPrincipal UserDetails userDetails) throws Exception {
-        return csvService.getListaLibriPerUtenteToStringArray(userDetails);
+    public ResponseEntity<?> getCsv(@RequestParam long utenteId) throws Exception {
+        return csvService.getListaLibriPerUtenteToStringArray(utenteId);
     }
 
     @PostMapping("/save-book")
-    public ResponseEntity<?> aggiungiLibro(@RequestBody @Valid LibroRequest libroRequest, @AuthenticationPrincipal UserDetails userDetails) {
-        return libroService.aggiungiLibro(libroRequest, userDetails);
+    public ResponseEntity<?> aggiungiLibro(@RequestBody @Valid LibroRequest libroRequest, @RequestParam long utenteId) {
+        return libroService.aggiungiLibro(libroRequest, utenteId);
     }
 
 
