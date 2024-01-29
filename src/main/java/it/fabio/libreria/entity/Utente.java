@@ -1,6 +1,5 @@
 package it.fabio.libreria.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -50,7 +49,7 @@ public class Utente implements UserDetails {
 
     @Override
     public String getUsername() {
-        return cognome;
+        return nome;
     }
 
     @Override
