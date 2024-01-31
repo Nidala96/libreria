@@ -28,7 +28,7 @@ public class CsvService {
 
     public ResponseEntity<?> getListaLibriPerUtenteToStringArray(UserDetails userDetails) throws Exception {
         Utente utenteData = (Utente) userDetails;
-        Utente utente = utenteRepository.findById(utenteData.getId()).orElseThrow();
+        Utente utente = utenteRepository.findById(utenteData.getId()).orElseThrow(() -> new ResourceNotFoundException("Utente", "id", utenteData.getId()));
         if(utente == null) {
             return new ResponseEntity<>("Utente non esiste", HttpStatus.NOT_FOUND);
         }

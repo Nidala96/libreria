@@ -1,14 +1,12 @@
 package it.fabio.libreria.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.Proxy;
 import org.hibernate.type.SqlTypes;
 
 import java.util.Date;
@@ -19,7 +17,6 @@ import java.util.Objects;
 @Setter
 @Getter
 @RequiredArgsConstructor
-@Proxy(lazy = false)
 public class Libro {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

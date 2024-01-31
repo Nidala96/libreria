@@ -3,7 +3,7 @@ package it.fabio.libreria.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Proxy;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -16,7 +16,6 @@ import java.util.Set;
 @Setter
 @Getter
 @RequiredArgsConstructor
-@Proxy(lazy = false)
 @Builder
 @AllArgsConstructor
 public class Utente implements UserDetails {
