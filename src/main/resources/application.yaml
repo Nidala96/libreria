@@ -32,7 +32,7 @@ spring:
                   # Altresi modifica le tabelle esistenti aggiungendo solo i campi nuovi ma non modificando quelli preesistenti.
         # create-drop: crea le tabelle all'avvio dell'applicazione e ne fa il drop quando stoppo l'applicazione
         # validated: confronta le classi (entita) con le tabelle; se trova discrepanze solleva una eccezione.
-      ddl-auto: update
+      ddl-auto: create-drop
     properties:
       dialect: org.hibernate.dialect.MySQLDialect
     show-sql: true
