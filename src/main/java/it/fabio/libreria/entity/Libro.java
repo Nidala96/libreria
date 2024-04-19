@@ -1,7 +1,5 @@
 package it.fabio.libreria.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -12,7 +10,6 @@ import org.hibernate.annotations.Proxy;
 import org.hibernate.type.SqlTypes;
 
 import java.util.Date;
-import java.util.Objects;
 
 
 @Entity
@@ -47,11 +44,6 @@ public class Libro {
     @JdbcTypeCode(SqlTypes.JSON)
     private Image image;
 
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "utente_id")
-    private Utente utente;
-
     public Libro(String titolo, String autore, String codiceISBN, String trama, int numeroLettureComplete) {
         this.titolo = titolo;
         this.autore = autore;
@@ -74,16 +66,5 @@ public class Libro {
                 '}';
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Libro libro = (Libro) o;
-        return Objects.equals(id, libro.id);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 }

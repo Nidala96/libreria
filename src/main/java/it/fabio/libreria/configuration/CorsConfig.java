@@ -11,12 +11,10 @@ public class CorsConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
+        registry.addMapping("/libro/**")
                 .allowedOrigins(frontEndUrl)
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowCredentials(true);
-
-
     }
 }
 
