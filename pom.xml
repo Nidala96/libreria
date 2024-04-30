@@ -15,7 +15,7 @@
 	<description>Web App libreria</description>
 	<properties>
 		<java.version>17</java.version>
-			<spring-doc>2.1.0</spring-doc>
+		<spring-doc>2.1.0</spring-doc>
 	</properties>
 	<dependencies>
 		<dependency>
